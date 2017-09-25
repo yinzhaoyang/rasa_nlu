@@ -269,7 +269,7 @@ Luckily, there&#8217;s a <a class="reference external" href="https://github.com/
 Create a file called <code class="docutils literal"><span class="pre">config_spacy.json</span></code> or <code class="docutils literal"><span class="pre">config_mitie.json</span></code>, depending on the pipeline selected, in your working directory which looks like this</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;pipeline&quot;</span><span class="p">:</span> <span class="s2">&quot;spacy_sklearn&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;path&quot;</span> <span class="p">:</span> <span class="s2">&quot;./models&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;path&quot;</span> <span class="p">:</span> <span class="s2">&quot;./projects&quot;</span><span class="p">,</span>
   <span class="nt">&quot;data&quot;</span> <span class="p">:</span> <span class="s2">&quot;./data/examples/rasa/demo-rasa.json&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -278,7 +278,7 @@ Create a file called <code class="docutils literal"><span class="pre">config_spa
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;pipeline&quot;</span><span class="p">:</span> <span class="s2">&quot;mitie&quot;</span><span class="p">,</span>
   <span class="nt">&quot;mitie_file&quot;</span><span class="p">:</span> <span class="s2">&quot;./data/total_word_feature_extractor.dat&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;path&quot;</span> <span class="p">:</span> <span class="s2">&quot;./models&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;path&quot;</span> <span class="p">:</span> <span class="s2">&quot;./projects&quot;</span><span class="p">,</span>
   <span class="nt">&quot;data&quot;</span> <span class="p">:</span> <span class="s2">&quot;./data/examples/rasa/demo-rasa.json&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -289,7 +289,7 @@ Create a file called <code class="docutils literal"><span class="pre">config_spa
 </div>
 <p>If you want to know more about the parameters, there is an overview of the <a class="reference internal" href="config.html#section-configuration"><span class="std std-ref">Configuration</span></a>. After a few minutes,
 rasa NLU will finish training, and you&#8217;ll see a new folder named as
-<code class="docutils literal"><span class="pre">models/default/model_YYYYMMDD-HHMMSS</span></code> with the timestamp when training finished.</p>
+<code class="docutils literal"><span class="pre">projects/default/model_YYYYMMDD-HHMMSS</span></code> with the timestamp when training finished.</p>
 </div>
 <div class="section" id="using-your-model">
 <h2>Using Your Model<a class="headerlink" href="#using-your-model" title="Permalink to this headline">¶</a></h2>

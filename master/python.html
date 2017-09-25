@@ -211,7 +211,7 @@ Or, you can train directly in python with a script like the following (using spa
 <span class="n">training_data</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;data/examples/rasa/demo-rasa.json&#39;</span><span class="p">)</span>
 <span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">RasaNLUConfig</span><span class="p">(</span><span class="s2">&quot;sample_configs/config_spacy.json&quot;</span><span class="p">))</span>
 <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
-<span class="n">model_directory</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="s1">&#39;./models/&#39;</span><span class="p">)</span>  <span class="c1"># Returns the directory the model is stored in</span>
+<span class="n">model_directory</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="s1">&#39;./projects/default/&#39;</span><span class="p">)</span>  <span class="c1"># Returns the directory the model is stored in</span>
 </pre></div>
 </div>
 </div>
@@ -246,7 +246,7 @@ a <code class="docutils literal"><span class="pre">ComponentBuilder</span></code
 <span class="n">training_data</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;data/examples/rasa/demo-rasa.json&#39;</span><span class="p">)</span>
 <span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">RasaNLUConfig</span><span class="p">(</span><span class="s2">&quot;sample_configs/config_spacy.json&quot;</span><span class="p">),</span> <span class="n">builder</span><span class="p">)</span>
 <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
-<span class="n">model_directory</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="s1">&#39;./models/&#39;</span><span class="p">)</span>  <span class="c1"># Returns the directory the model is stored in</span>
+<span class="n">model_directory</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="s1">&#39;./projects/default/&#39;</span><span class="p">)</span>  <span class="c1"># Returns the directory the model is stored in</span>
 </pre></div>
 </div>
 <p>The same builder can be used to load a model (can be a totally different one). The builder only caches components that are safe to be shared between models. Here is a short example on how to use the builder when loading models:</p>
