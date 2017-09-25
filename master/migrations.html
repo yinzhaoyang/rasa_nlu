@@ -204,6 +204,20 @@
 how you can migrate from one version to another.</p>
 <div class="section" id="x-to-master">
 <h2>0.9.x to master<a class="headerlink" href="#x-to-master" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>We introduced a new concept called a <code class="docutils literal"><span class="pre">project</span></code>. You can have multiple versions
+of a model trained for a project. E.g. you can train an initial model and
+add more training data and retrain that project. This will result in a new
+model version for the same project. This allows you to, allways request
+the latest model version from the http server and makes the model handling
+more structured.</li>
+<li>If you want to reuse trained models you need to move them in a directory named
+after the project. E.g. if you already got a trained model in directory <cite>my_root/model_20170628-002704</cite>
+you need to move that to <cite>my_root/my_project/model_20170628-002704</cite>. Your
+new projects name will be <cite>my_project</cite> and you can query the model using the
+http server using <cite>curl http://localhost:5000/parse?q=hello%20there&amp;project=my_project</cite></li>
+<li>Docs moved to <a class="reference external" href="http://nlu.rasa.ai">http://nlu.rasa.ai</a></li>
+</ul>
 </div>
 <div class="section" id="x-to-0-9-x">
 <h2>0.8.x to 0.9.x<a class="headerlink" href="#x-to-0-9-x" title="Permalink to this headline">¶</a></h2>
