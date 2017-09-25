@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Migration Guide &mdash; rasa NLU 0.10.0a5 documentation</title>
+  <title>Migration Guide &mdash; rasa NLU 0.10.0a6 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="rasa NLU 0.10.0a5 documentation" href="index.html"/>
+    <link rel="top" title="rasa NLU 0.10.0a6 documentation" href="index.html"/>
         <link rel="next" title="License" href="license.html"/>
         <link rel="prev" title="Frequently Asked Questions" href="faq.html"/>
 <link href="_static/css/rasa_theme.css" rel="stylesheet" type="text/css">
@@ -212,11 +212,14 @@ model version for the same project. This allows you to, allways request
 the latest model version from the http server and makes the model handling
 more structured.</li>
 <li>If you want to reuse trained models you need to move them in a directory named
-after the project. E.g. if you already got a trained model in directory <cite>my_root/model_20170628-002704</cite>
-you need to move that to <cite>my_root/my_project/model_20170628-002704</cite>. Your
-new projects name will be <cite>my_project</cite> and you can query the model using the
-http server using <cite>curl http://localhost:5000/parse?q=hello%20there&amp;project=my_project</cite></li>
+after the project. E.g. if you already got a trained model in directory <code class="docutils literal"><span class="pre">my_root/model_20170628-002704</span></code>
+you need to move that to <code class="docutils literal"><span class="pre">my_root/my_project/model_20170628-002704</span></code>. Your
+new projects name will be <code class="docutils literal"><span class="pre">my_project</span></code> and you can query the model using the
+http server using <code class="docutils literal"><span class="pre">curl</span> <span class="pre">http://localhost:5000/parse?q=hello%20there&amp;project=my_project</span></code></li>
 <li>Docs moved to <a class="reference external" href="http://nlu.rasa.ai">http://nlu.rasa.ai</a></li>
+<li>Renamed <code class="docutils literal"><span class="pre">name</span></code> parameter to <code class="docutils literal"><span class="pre">project</span></code>. This means for training requests you now need to pass the <code class="docutils literal"><span class="pre">project</span> <span class="pre">parameter</span>
+<span class="pre">instead</span> <span class="pre">of</span> <span class="pre">``name</span></code>, e.g. <code class="docutils literal"><span class="pre">POST</span> <span class="pre">/train?project=my_project_name</span></code> with the body of the
+request containing the training data</li>
 </ul>
 </div>
 <div class="section" id="x-to-0-9-x">
@@ -370,7 +373,7 @@ version prev to 0.7 you need to adapt the paths manually in <code class="docutil
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.0a5',
+            VERSION:'0.10.0a6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

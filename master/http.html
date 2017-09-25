@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using rasa NLU as a HTTP server &mdash; rasa NLU 0.10.0a5 documentation</title>
+  <title>Using rasa NLU as a HTTP server &mdash; rasa NLU 0.10.0a6 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="rasa NLU 0.10.0a5 documentation" href="index.html"/>
+    <link rel="top" title="rasa NLU 0.10.0a6 documentation" href="index.html"/>
         <link rel="next" title="Using rasa NLU from python" href="python.html"/>
         <link rel="prev" title="Training Data Format" href="dataformat.html"/>
 <link href="_static/css/rasa_theme.css" rel="stylesheet" type="text/css">
@@ -255,10 +255,10 @@ You can (should) specify the project you want to use in your query :</p>
 <p>You can post your training data to this endpoint to train a new model for a project.
 This request will wait for the server answer: either the model was trained successfully or the training errored.
 Using the HTTP server, you must specify the project you want to train a new model for to be able to use it during parse requests later on :
-<code class="docutils literal"><span class="pre">/train?name=my_project</span></code>. Any parameter passed with the query string will be treated as a
+<code class="docutils literal"><span class="pre">/train?project=my_project</span></code>. Any parameter passed with the query string will be treated as a
 configuration parameter of the model, hence you can change all the configuration values listed in the
 configuration section by passing in their name and the adjusted value.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$ curl -XPOST localhost:5000/train?name<span class="o">=</span>my_project -d @data/examples/rasa/demo-rasa.json
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ curl -XPOST localhost:5000/train?project<span class="o">=</span>my_project -d @data/examples/rasa/demo-rasa.json
 </pre></div>
 </div>
 <p>You cannot send a training request for a project already training a new model (see below).</p>
@@ -455,7 +455,7 @@ under the <code class="docutils literal"><span class="pre">path</span></code> di
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.0a5',
+            VERSION:'0.10.0a6',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
