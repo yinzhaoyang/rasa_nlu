@@ -106,11 +106,19 @@ class GCSPersistor(Persistor):
             raise ValueError('target_dir %r not found.' % target_dir)
 
         base_name = os.path.basename(target_dir)
-        base_dir = os.path.dirname(target_dir)
-        tarname = shutil.make_archive(base_name, 'gztar', root_dir=base_dir, base_dir=base_name)
+        project_dir = os.path.dirname(target_dir)
+        project = os.path.basename(project_dir)
+
+        tarname = shutil.make_archive(base_name, 'gztar', root_dir=project_dir, base_dir=base_name)
         filekey = os.path.basename(tarname)
-        blob = self.bucket.blob(filekey)
-        blob.upload_from_filename(tarname)
+
+        if not os.path.exists(project):
+            os.mkdir(project)
+        shutil.move(filekey, project)
+
+        blobname = os.path.join(project, filekey)
+        blob = self.bucket.blob(blobname)
+        blob.upload_from_filename(blobname)
 
     def fetch_and_extract(self, filename):
         # type: (Text) -> None
