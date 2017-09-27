@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Training Data Format &mdash; rasa NLU 0.9.2 documentation</title>
+  <title>Training Data Format &mdash; rasa NLU 0.10.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="rasa NLU 0.9.2 documentation" href="index.html"/>
+    <link rel="top" title="rasa NLU 0.10.0 documentation" href="index.html"/>
         <link rel="next" title="Using rasa NLU as a HTTP server" href="http.html"/>
         <link rel="prev" title="Migrating an existing app" href="migrating.html"/>
 <link href="_static/css/rasa_theme.css" rel="stylesheet" type="text/css">
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                0.9
+                0.10
               </div>
             
           
@@ -107,6 +107,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#common-examples">Common Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#entity-synonyms">Entity Synonyms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#regular-expression-features">Regular Expression Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#markdown-format">Markdown Format</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="http.html">Using rasa NLU as a HTTP server</a></li>
@@ -122,7 +123,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Developer Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/RasaHQ/rasa_nlu/projects/2">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
 </ul>
@@ -326,6 +327,23 @@ recognize entities and related intents. Hence, you still need to provide intent 
 training data!</p>
 </div>
 </div>
+<div class="section" id="markdown-format">
+<h2>Markdown Format<a class="headerlink" href="#markdown-format" title="Permalink to this headline">¶</a></h2>
+<p>Alternatively training data can be used in the following markdown format (Regex features not supported yet):</p>
+<div class="highlight-markdown"><div class="highlight"><pre><span></span>## intent:check_balance
+- what is my balance &lt;!-- no entity --&gt;
+- how much do I have on my [savings](source_account) &lt;!-- entity &quot;source_account&quot; has value &quot;savings&quot; --&gt;
+- how much do I have on my [my savings account](source_account:savings) &lt;!-- synonyms, method 1--&gt;
+
+## intent:greet
+- hey
+- hello
+
+## synonym:savings   &lt;!-- synonyms, method 2 --&gt;
+- pink pig
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -350,7 +368,7 @@ training data!</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Lastmile Technologies Ltd.
+        &copy; Copyright 2017, Rasa Technologies GmbH.
 
     </p>
   </div>
@@ -368,12 +386,13 @@ training data!</p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 0.9.2
+        v: 0.10.0
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
         <dl>
             <dt>Tags</dt>
+            <dd><a href="0.10.0/dataformat.html">0.10.0</a></dd>
             <dd><a href="0.9.2/dataformat.html">0.9.2</a></dd>
             <dd><a href="0.9.1/dataformat.html">0.9.1</a></dd>
             <dd><a href="0.9.0/dataformat.html">0.9.0</a></dd>
@@ -412,7 +431,7 @@ training data!</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.9.2',
+            VERSION:'0.10.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

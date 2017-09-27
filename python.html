@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using rasa NLU from python &mdash; rasa NLU 0.9.2 documentation</title>
+  <title>Using rasa NLU from python &mdash; rasa NLU 0.10.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="rasa NLU 0.9.2 documentation" href="index.html"/>
+    <link rel="top" title="rasa NLU 0.10.0 documentation" href="index.html"/>
         <link rel="next" title="Entity Extraction" href="entities.html"/>
         <link rel="prev" title="Using rasa NLU as a HTTP server" href="http.html"/>
 <link href="_static/css/rasa_theme.css" rel="stylesheet" type="text/css">
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                0.9
+                0.10
               </div>
             
           
@@ -121,7 +121,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Developer Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/RasaHQ/rasa_nlu/projects/2">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
 </ul>
@@ -206,9 +206,9 @@ Or, you can train directly in python with a script like the following (using spa
 <span class="kn">from</span> <span class="nn">rasa_nlu.model</span> <span class="k">import</span> <span class="n">Trainer</span>
 
 <span class="n">training_data</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;data/examples/rasa/demo-rasa.json&#39;</span><span class="p">)</span>
-<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">RasaNLUConfig</span><span class="p">(</span><span class="s2">&quot;config_spacy.json&quot;</span><span class="p">))</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">RasaNLUConfig</span><span class="p">(</span><span class="s2">&quot;sample_configs/config_spacy.json&quot;</span><span class="p">))</span>
 <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
-<span class="n">model_directory</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="s1">&#39;./models/&#39;</span><span class="p">)</span>  <span class="c1"># Returns the directory the model is stored in</span>
+<span class="n">model_directory</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="s1">&#39;./projects/default/&#39;</span><span class="p">)</span>  <span class="c1"># Returns the directory the model is stored in</span>
 </pre></div>
 </div>
 </div>
@@ -219,8 +219,8 @@ your model and instantiate an interpreter. The <code class="docutils literal"><s
 necessary info to recover your model:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rasa_nlu.model</span> <span class="k">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">Interpreter</span>
 
-<span class="n">metadata</span> <span class="o">=</span> <span class="n">Metadata</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_directory</span><span class="p">)</span>   <span class="c1"># where model_directory points to the folder the model is persisted in</span>
-<span class="n">interpreter</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">RasaNLUConfig</span><span class="p">(</span><span class="s2">&quot;config_spacy.json&quot;</span><span class="p">))</span>
+<span class="c1"># where `model_directory points to the folder the model is persisted in</span>
+<span class="n">interpreter</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_directory</span><span class="p">,</span> <span class="n">RasaNLUConfig</span><span class="p">(</span><span class="s2">&quot;sample_configs/config_spacy.json&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>You can then use the loaded interpreter to parse text:</p>
@@ -241,22 +241,21 @@ a <code class="docutils literal"><span class="pre">ComponentBuilder</span></code
 <span class="n">builder</span> <span class="o">=</span> <span class="n">ComponentBuilder</span><span class="p">(</span><span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>      <span class="c1"># will cache components between pipelines (where possible)</span>
 
 <span class="n">training_data</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="s1">&#39;data/examples/rasa/demo-rasa.json&#39;</span><span class="p">)</span>
-<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">RasaNLUConfig</span><span class="p">(</span><span class="s2">&quot;config_spacy.json&quot;</span><span class="p">),</span> <span class="n">builder</span><span class="p">)</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">RasaNLUConfig</span><span class="p">(</span><span class="s2">&quot;sample_configs/config_spacy.json&quot;</span><span class="p">),</span> <span class="n">builder</span><span class="p">)</span>
 <span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">training_data</span><span class="p">)</span>
-<span class="n">model_directory</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="s1">&#39;./models/&#39;</span><span class="p">)</span>  <span class="c1"># Returns the directory the model is stored in</span>
+<span class="n">model_directory</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">persist</span><span class="p">(</span><span class="s1">&#39;./projects/default/&#39;</span><span class="p">)</span>  <span class="c1"># Returns the directory the model is stored in</span>
 </pre></div>
 </div>
 <p>The same builder can be used to load a model (can be a totally different one). The builder only caches components that are safe to be shared between models. Here is a short example on how to use the builder when loading models:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rasa_nlu.model</span> <span class="k">import</span> <span class="n">Metadata</span><span class="p">,</span> <span class="n">Interpreter</span>
-<span class="n">config</span> <span class="o">=</span> <span class="n">RasaNLUConfig</span><span class="p">(</span><span class="s2">&quot;config_spacy.json&quot;</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">RasaNLUConfig</span><span class="p">(</span><span class="s2">&quot;sample_configs/config_spacy.json&quot;</span><span class="p">)</span>
 
 <span class="c1"># For simplicity we will load the same model twice, usually you would want to use the metadata of</span>
 <span class="c1"># different models</span>
-<span class="n">metadata_model</span> <span class="o">=</span> <span class="n">Metadata</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_directory</span><span class="p">)</span>
 
-<span class="n">interpreter</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">metadata_model</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">builder</span><span class="p">)</span>     <span class="c1"># to use the builder, pass it as an arg when loading the model</span>
+<span class="n">interpreter</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_directory</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">builder</span><span class="p">)</span>     <span class="c1"># to use the builder, pass it as an arg when loading the model</span>
 <span class="c1"># the clone will share resources with the first model, as long as the same builder is passed!</span>
-<span class="n">interpreter_clone</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">metadata_model</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">builder</span><span class="p">)</span>
+<span class="n">interpreter_clone</span> <span class="o">=</span> <span class="n">Interpreter</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_directory</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">builder</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -284,7 +283,7 @@ a <code class="docutils literal"><span class="pre">ComponentBuilder</span></code
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Lastmile Technologies Ltd.
+        &copy; Copyright 2017, Rasa Technologies GmbH.
 
     </p>
   </div>
@@ -302,12 +301,13 @@ a <code class="docutils literal"><span class="pre">ComponentBuilder</span></code
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 0.9.2
+        v: 0.10.0
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
         <dl>
             <dt>Tags</dt>
+            <dd><a href="0.10.0/python.html">0.10.0</a></dd>
             <dd><a href="0.9.2/python.html">0.9.2</a></dd>
             <dd><a href="0.9.1/python.html">0.9.1</a></dd>
             <dd><a href="0.9.0/python.html">0.9.0</a></dd>
@@ -346,7 +346,7 @@ a <code class="docutils literal"><span class="pre">ComponentBuilder</span></code
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.9.2',
+            VERSION:'0.10.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

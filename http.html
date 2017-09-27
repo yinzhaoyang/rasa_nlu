@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using rasa NLU as a HTTP server &mdash; rasa NLU 0.9.2 documentation</title>
+  <title>Using rasa NLU as a HTTP server &mdash; rasa NLU 0.10.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="rasa NLU 0.9.2 documentation" href="index.html"/>
+    <link rel="top" title="rasa NLU 0.10.0 documentation" href="index.html"/>
         <link rel="next" title="Using rasa NLU from python" href="python.html"/>
         <link rel="prev" title="Training Data Format" href="dataformat.html"/>
 <link href="_static/css/rasa_theme.css" rel="stylesheet" type="text/css">
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                0.9
+                0.10
               </div>
             
           
@@ -131,7 +131,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Developer Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/RasaHQ/rasa_nlu/projects/2">Roadmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change Log</a></li>
 </ul>
@@ -207,22 +207,17 @@
 <span id="section-http"></span><h1>Using rasa NLU as a HTTP server<a class="headerlink" href="#using-rasa-nlu-as-a-http-server" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Before you can use the server, you need to train a model! See <a class="reference internal" href="tutorial.html#training-your-model"><span class="std std-ref">Training Your Model</span></a></p>
+<p class="last">Before you can use the server, you need to train a model! See <a class="reference internal" href="tutorial.html#training-your-model"><span class="std std-ref">Training a New Model for your Project</span></a></p>
 </div>
 <p>The HTTP api exists to make it easy for non-python projects to use rasa NLU, and to make it trivial for projects currently using {wit,LUIS,api}.ai to try it out.</p>
 <div class="section" id="running-the-server">
 <h2>Running the server<a class="headerlink" href="#running-the-server" title="Permalink to this headline">¶</a></h2>
-<p>You can run a simple http server that handles requests using your models with (single threaded)</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$ python -m rasa_nlu.server -c config_spacy.json --server_model_dirs<span class="o">=</span>./model_YYYYMMDD-HHMMSS
+<p>You can run a simple http server that handles requests using your projects with :</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ python -m rasa_nlu.server -c sample_configs/config_spacy.json
 </pre></div>
 </div>
-<p>If your server needs to handle more than one request at a time, you can use any WSGI server to run the rasa NLU server. Using gunicorn this looks like this:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$ gunicorn -w <span class="m">4</span> --threads <span class="m">12</span> -k gevent -b <span class="m">127</span>.0.0.1:5000 rasa_nlu.wsgi
-</pre></div>
-</div>
-<p>This will start a server with four processes and 12 threads. Since there is no standard way to pass command line arguments to the server, all your configuration
-options need to be placed in your configuration file (including the <code class="docutils literal"><span class="pre">server_model_dirs</span></code>!). You can set the location of the configuration file using environment
-variables, otherwise the default configuration from <code class="docutils literal"><span class="pre">config.json</span></code> will be loaded.</p>
+<p>The server will look for existing projects under the folder defined by the <code class="docutils literal"><span class="pre">path</span></code> parameter in the configuration.
+By default a project will load the latest trained model.</p>
 </div>
 <div class="section" id="emulation">
 <h2>Emulation<a class="headerlink" href="#emulation" title="Permalink to this headline">¶</a></h2>
@@ -242,26 +237,45 @@ For example, if you would normally send your text to be parsed to LUIS, you woul
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$ curl -XPOST localhost:5000/parse -d <span class="s1">&#39;{&quot;q&quot;:&quot;hello there&quot;}&#39;</span>
 </pre></div>
 </div>
+<p>By default, when the project is not specified in the query, the <code class="docutils literal"><span class="pre">&quot;default&quot;</span></code> one will be used.
+You can (should) specify the project you want to use in your query :</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ curl -XPOST localhost:5000/parse -d &#39;{&quot;q&quot;:&quot;hello there&quot;, &quot;project&quot;: &quot;my_restaurant_search_bot&quot;}
+</pre></div>
 </div>
-<div class="section" id="post-train">
-<h3><code class="docutils literal"><span class="pre">POST</span> <span class="pre">/train</span></code><a class="headerlink" href="#post-train" title="Permalink to this headline">¶</a></h3>
-<p>You can post your training data to this endpoint to train a new model.
-this starts a separate process which you can monitor with the <code class="docutils literal"><span class="pre">/status</span></code> endpoint. If you want to name your model
-to be able to use it during parse requests later on, you should pass the name <code class="docutils literal"><span class="pre">/train?name=my_model</span></code>. Any parameter
-passed with the query string will be treated as a configuration parameter of the model, hence you can change all
-the configuration values listed in the configuration section by passing in their name and the adjusted value.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$ curl -XPOST localhost:5000/train -d @data/examples/rasa/demo-rasa.json
+<p>By default the latest trained model for the project will be loaded. You can also query against a specific model for a project :</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ curl -XPOST localhost:5000/parse -d &#39;{&quot;q&quot;:&quot;hello there&quot;, &quot;project&quot;: &quot;my_restaurant_search_bot&quot;, &quot;model&quot;: &lt;model_XXXXXX&gt;}
 </pre></div>
 </div>
 </div>
+<div class="section" id="post-train">
+<h3><code class="docutils literal"><span class="pre">POST</span> <span class="pre">/train</span></code><a class="headerlink" href="#post-train" title="Permalink to this headline">¶</a></h3>
+<p>You can post your training data to this endpoint to train a new model for a project.
+This request will wait for the server answer: either the model was trained successfully or the training errored.
+Using the HTTP server, you must specify the project you want to train a new model for to be able to use it during parse requests later on :
+<code class="docutils literal"><span class="pre">/train?project=my_project</span></code>. Any parameter passed with the query string will be treated as a
+configuration parameter of the model, hence you can change all the configuration values listed in the
+configuration section by passing in their name and the adjusted value.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ curl -XPOST localhost:5000/train?project<span class="o">=</span>my_project -d @data/examples/rasa/demo-rasa.json
+</pre></div>
+</div>
+<p>You cannot send a training request for a project already training a new model (see below).</p>
+</div>
 <div class="section" id="get-status">
 <h3><code class="docutils literal"><span class="pre">GET</span> <span class="pre">/status</span></code><a class="headerlink" href="#get-status" title="Permalink to this headline">¶</a></h3>
-<p>This checks if there is currently a training process running (you can only run one at a time).
-also returns a list of available models the server can use to fulfill <code class="docutils literal"><span class="pre">/parse</span></code> requests.</p>
+<p>This returns all the currently available projects, their status (<code class="docutils literal"><span class="pre">training</span></code> or <code class="docutils literal"><span class="pre">ready</span></code>) and their models loaded in memory.
+also returns a list of available projects the server can use to fulfill <code class="docutils literal"><span class="pre">/parse</span></code> requests.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$ curl localhost:5000/status <span class="p">|</span> python -mjson.tool
+
 <span class="o">{</span>
-  <span class="s2">&quot;training&quot;</span> : False
-  <span class="s2">&quot;models&quot;</span> : <span class="o">[]</span>
+  <span class="s2">&quot;available_projects&quot;</span>: <span class="o">{</span>
+    <span class="s2">&quot;my_restaurant_search_bot&quot;</span> : <span class="o">{</span>
+      <span class="s2">&quot;status&quot;</span> : <span class="s2">&quot;ready&quot;</span>,
+      <span class="s2">&quot;available_models&quot;</span> : <span class="o">[</span>
+        &lt;model_XXXXXX&gt;,
+        &lt;model_XXXXXX&gt;
+      <span class="o">]</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
 </div>
@@ -298,38 +312,59 @@ If set, this token must be passed as a query parameter in all requests, e.g. :</
 <div class="highlight-bash"><div class="highlight"><pre><span></span>$ curl localhost:5000/status?token<span class="o">=</span><span class="m">12345</span>
 </pre></div>
 </div>
+<p>On default CORS (cross-origin resource sharing) calls are not allowed. If you want to call your rasa NLU server from another domain (for example from a training web UI) then you can whitelist that domain by adding it to the config value <code class="docutils literal"><span class="pre">cors_origin</span></code>.</p>
 </div>
 <div class="section" id="serving-multiple-apps">
 <span id="section-http-config"></span><h2>Serving Multiple Apps<a class="headerlink" href="#serving-multiple-apps" title="Permalink to this headline">¶</a></h2>
 <p>Depending on your choice of backend, rasa NLU can use quite a lot of memory.
 So if you are serving multiple models in production, you want to serve these
 from the same process &amp; avoid duplicating the memory load.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although this saves the backend from loading the same backend twice, it still needs to load one set of
-word vectors (which make up most of the memory consumption) per language and backend.</p>
-</div>
-<p>You can use the multi-tenancy mode by replacing the <code class="docutils literal"><span class="pre">server_model_dirs</span></code> config
-variable with a json object describing the different models.</p>
-<p>For example, if you have a restaurant bot and a hotel bot, your configuration might look like this:</p>
-<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;server_model_dirs&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;hotels&quot;</span> <span class="p">:</span> <span class="s2">&quot;./model_XXXXXXX&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;restaurants&quot;</span> <span class="p">:</span> <span class="s2">&quot;./model_YYYYYYY&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>You then pass an extra <code class="docutils literal"><span class="pre">model</span></code> parameter in your calls to <code class="docutils literal"><span class="pre">/parse</span></code> to specify which one to use:</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> curl <span class="s1">&#39;localhost:5000/parse?q=hello&amp;model=hotels&#39;</span>
+<dl class="docutils">
+<dt>Although this saves the backend from loading the same backend twice, it still needs to load one set of</dt>
+<dd>word vectors (which make up most of the memory consumption) per language and backend.</dd>
+</dl>
+<p>As stated previously, Rasa NLU naturally handles serving multiple apps : by default the server will load all projects found
+under the <code class="docutils literal"><span class="pre">path</span></code> directory defined in the configuration. The file structure under <code class="docutils literal"><span class="pre">path</span> <span class="pre">directory</span></code> is as follows :</p>
+<ul class="simple">
+<li>&lt;path&gt;</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>&lt;project_A&gt;</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>&lt;model_XXXXXX&gt;</li>
+<li>&lt;model_XXXXXX&gt;</li>
+</ul>
+<blockquote>
+<div>...</div></blockquote>
+</div></blockquote>
+<ul class="simple">
+<li>&lt;project_B&gt;</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>&lt;model_XXXXXX&gt;</li>
+</ul>
+<blockquote>
+<div>...</div></blockquote>
+<p>...</p>
+</div></blockquote>
+</div></blockquote>
+<p>So you can specify which one to use in your <code class="docutils literal"><span class="pre">/parse</span></code> requests:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> curl <span class="s1">&#39;localhost:5000/parse?q=hello&amp;project=my_restaurant_search_bot&#39;</span>
 </pre></div>
 </div>
 <p>or</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -XPOST localhost:5000/parse -d <span class="s1">&#39;{&quot;q&quot;:&quot;I am looking for Chinese food&quot;, &quot;model&quot;: &quot;restaurants&quot;}&#39;</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -XPOST localhost:5000/parse -d <span class="s1">&#39;{&quot;q&quot;:&quot;I am looking for Chinese food&quot;, &quot;project&quot;:&quot;my_restaurant_search_bot&quot;}&#39;</span>
 </pre></div>
 </div>
-<p>If one of the models is named <code class="docutils literal"><span class="pre">default</span></code>, it will be used to serve requests missing a <code class="docutils literal"><span class="pre">model</span></code> parameter.
-If no model is named <code class="docutils literal"><span class="pre">default</span></code> requests without a model parameter will be rejected.</p>
+<p>You can also specify the model you want to use for a given project, the default used being the latest trained :</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -XPOST localhost:5000/parse -d <span class="s1">&#39;{&quot;q&quot;:&quot;I am looking for Chinese food&quot;, &quot;project&quot;:&quot;my_restaurant_search_bot&quot;, &quot;model&quot;:&lt;model_XXXXXX&gt;}&#39;</span>
+</pre></div>
+</div>
+<p>If no project is to be found by the server under the <code class="docutils literal"><span class="pre">path</span></code> directory, a <code class="docutils literal"><span class="pre">&quot;default&quot;</span></code> one will be used, using a simple fallback model.</p>
 </div>
 </div>
 
@@ -355,7 +390,7 @@ If no model is named <code class="docutils literal"><span class="pre">default</s
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2016, Lastmile Technologies Ltd.
+        &copy; Copyright 2017, Rasa Technologies GmbH.
 
     </p>
   </div>
@@ -373,12 +408,13 @@ If no model is named <code class="docutils literal"><span class="pre">default</s
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 0.9.2
+        v: 0.10.0
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
         <dl>
             <dt>Tags</dt>
+            <dd><a href="0.10.0/http.html">0.10.0</a></dd>
             <dd><a href="0.9.2/http.html">0.9.2</a></dd>
             <dd><a href="0.9.1/http.html">0.9.1</a></dd>
             <dd><a href="0.9.0/http.html">0.9.0</a></dd>
@@ -417,7 +453,7 @@ If no model is named <code class="docutils literal"><span class="pre">default</s
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.9.2',
+            VERSION:'0.10.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
