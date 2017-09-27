@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Migration Guide &mdash; rasa NLU 0.10.0a6 documentation</title>
+  <title>Migration Guide &mdash; rasa NLU 0.10.0a7 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="rasa NLU 0.10.0a6 documentation" href="index.html"/>
+    <link rel="top" title="rasa NLU 0.10.0a7 documentation" href="index.html"/>
         <link rel="next" title="License" href="license.html"/>
         <link rel="prev" title="Frequently Asked Questions" href="faq.html"/>
 <link href="_static/css/rasa_theme.css" rel="stylesheet" type="text/css">
@@ -113,7 +113,7 @@
 <li class="toctree-l1"><a class="reference internal" href="pipeline.html">Processing Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Migration Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#x-to-master">0.9.x to master</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#x-to-0-10-0">0.9.x to 0.10.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#x-to-0-9-x">0.8.x to 0.9.x</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#x-to-0-8-x">0.7.x to 0.8.x</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#x-to-0-7-x">0.6.x to 0.7.x</a></li>
@@ -202,8 +202,8 @@
 <h1>Migration Guide<a class="headerlink" href="#migration-guide" title="Permalink to this headline">¶</a></h1>
 <p>This page contains information about changes between major versions and
 how you can migrate from one version to another.</p>
-<div class="section" id="x-to-master">
-<h2>0.9.x to master<a class="headerlink" href="#x-to-master" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="x-to-0-10-0">
+<h2>0.9.x to 0.10.0<a class="headerlink" href="#x-to-0-10-0" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>We introduced a new concept called a <code class="docutils literal"><span class="pre">project</span></code>. You can have multiple versions
 of a model trained for a project. E.g. you can train an initial model and
@@ -216,10 +216,12 @@ after the project. E.g. if you already got a trained model in directory <code cl
 you need to move that to <code class="docutils literal"><span class="pre">my_root/my_project/model_20170628-002704</span></code>. Your
 new projects name will be <code class="docutils literal"><span class="pre">my_project</span></code> and you can query the model using the
 http server using <code class="docutils literal"><span class="pre">curl</span> <span class="pre">http://localhost:5000/parse?q=hello%20there&amp;project=my_project</span></code></li>
-<li>Docs moved to <a class="reference external" href="http://nlu.rasa.ai">http://nlu.rasa.ai</a></li>
+<li>Docs moved to <a class="reference external" href="https://rasahq.github.io/rasa_nlu/">https://rasahq.github.io/rasa_nlu/</a></li>
 <li>Renamed <code class="docutils literal"><span class="pre">name</span></code> parameter to <code class="docutils literal"><span class="pre">project</span></code>. This means for training requests you now need to pass the <code class="docutils literal"><span class="pre">project</span> <span class="pre">parameter</span>
 <span class="pre">instead</span> <span class="pre">of</span> <span class="pre">``name</span></code>, e.g. <code class="docutils literal"><span class="pre">POST</span> <span class="pre">/train?project=my_project_name</span></code> with the body of the
 request containing the training data</li>
+<li>Adapted remote cloud storages to support projects. This is a backwards incompatible change,
+and unfortunately you need to retrain uploaded models and reupload them.</li>
 </ul>
 </div>
 <div class="section" id="x-to-0-9-x">
@@ -373,7 +375,7 @@ version prev to 0.7 you need to adapt the paths manually in <code class="docutil
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.0a6',
+            VERSION:'0.10.0a7',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
