@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Configuration &mdash; rasa NLU 0.10.0 documentation</title>
+  <title>Configuration &mdash; rasa NLU 0.10.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="rasa NLU 0.10.0 documentation" href="index.html"/>
+    <link rel="top" title="rasa NLU 0.10.1 documentation" href="index.html"/>
         <link rel="next" title="Migrating an existing app" href="migrating.html"/>
         <link rel="prev" title="Tutorial: A simple restaurant search bot" href="tutorial.html"/>
 <link href="_static/css/rasa_theme.css" rel="stylesheet" type="text/css">
@@ -108,6 +108,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#pipeline">pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#language">language</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#num-threads">num_threads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixed-model-name">fixed_model_name</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#max-training-processes">max_training_processes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#path">path</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#response-log">response_log</a></li>
@@ -247,6 +248,7 @@ so the option <code class="docutils literal"><span class="pre">pipeline</span></
 <p>Here is the default configuration including all available parameters:</p>
 <div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;project&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="nt">&quot;fixed_model_name&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
   <span class="nt">&quot;pipeline&quot;</span><span class="p">:</span> <span class="p">[],</span>
   <span class="nt">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
   <span class="nt">&quot;num_threads&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -350,6 +352,24 @@ available templates, see <a class="reference internal" href="pipeline.html#secti
 </tr>
 <tr class="field-odd field"><th class="field-name">Description:</th><td class="field-body">Number of threads used during training (not supported by all components, though.
 Some of them might still be single threaded!).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="fixed-model-name">
+<h3>fixed_model_name<a class="headerlink" href="#fixed-model-name" title="Permalink to this headline">¶</a></h3>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal"><span class="pre">str</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Examples:</th><td class="field-body"><code class="docutils literal"><span class="pre">&quot;my_model_name&quot;</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Description:</th><td class="field-body">Instead of generating model names (e.g. <code class="docutils literal"><span class="pre">model_20170922-234435</span></code>) a fixed
+model name will be used. The model will always be saved in the path
+<code class="docutils literal"><span class="pre">{project_path}/{project_name}/{model_name}</span></code>. If the model is assigned
+a fixed name, it will possibly override previously trained models.</td>
 </tr>
 </tbody>
 </table>
@@ -798,12 +818,13 @@ This is used with the <code class="docutils literal"><span class="pre">C</span><
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 0.10.0
+        v: 0.10.1
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
         <dl>
             <dt>Tags</dt>
+            <dd><a href="0.10.1/config.html">0.10.1</a></dd>
             <dd><a href="0.10.0/config.html">0.10.0</a></dd>
             <dd><a href="0.9.2/config.html">0.9.2</a></dd>
             <dd><a href="0.9.1/config.html">0.9.1</a></dd>
@@ -843,7 +864,7 @@ This is used with the <code class="docutils literal"><span class="pre">C</span><
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.0',
+            VERSION:'0.10.1',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -870,7 +891,18 @@ This is used with the <code class="docutils literal"><span class="pre">C</span><
           SphinxRtdTheme.StickyNav.enable();
       });
   </script>
-   
+  
+ 
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-87333416-3"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments)};
+gtag('js', new Date());
+
+gtag('config', 'UA-87333416-3');
+</script>
+
 
 </body>
 </html>
