@@ -346,9 +346,9 @@ example, the <code class="docutils literal"><span class="pre">mitie</span></code
 pipeline does.</p>
 </div>
 <p>With very little data, rasa NLU can in certain cases already generalise concepts, for example:</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -XPOST localhost:5000/parse -d <span class="s1">&#39;{&quot;q&quot;:&quot;I want some italian&quot;}&#39;</span> <span class="p">|</span> python -mjson.tool
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -XPOST localhost:5000/parse -d <span class="s1">&#39;{&quot;q&quot;:&quot;I want some italian food&quot;}&#39;</span> <span class="p">|</span> python -mjson.tool
 <span class="go">{</span>
-<span class="go">    &quot;text&quot;: &quot;I want some italian&quot;,</span>
+<span class="go">    &quot;text&quot;: &quot;I want some italian food&quot;,</span>
 <span class="go">    &quot;entities&quot;: [</span>
 <span class="go">        {</span>
 <span class="go">          &quot;end&quot;: 19,</span>
