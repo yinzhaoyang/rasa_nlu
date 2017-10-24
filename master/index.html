@@ -213,7 +213,7 @@ the appropriate version of the documentation for your local installation!</p>
 </pre></div>
 </div>
 <p>The intended audience is mainly people developing bots.
-You can use rasa as a drop-in replacement for <a class="reference external" href="https://wit.ai">wit</a> , <a class="reference external" href="https://www.luis.ai">LUIS</a> , or <a class="reference external" href="https://api.ai">api.ai</a>, the only change in your code is to send requests to <code class="docutils literal"><span class="pre">localhost</span></code> instead (see <a class="reference internal" href="migrating.html#section-migration"><span class="std std-ref">Migrating an existing app</span></a> for details).</p>
+You can use rasa as a drop-in replacement for <a class="reference external" href="https://wit.ai">wit</a> , <a class="reference external" href="https://www.luis.ai">LUIS</a> , or <a class="reference external" href="https://dialogflow.com">Dialogflow</a>, the only change in your code is to send requests to <code class="docutils literal"><span class="pre">localhost</span></code> instead (see <a class="reference internal" href="migrating.html#section-migration"><span class="std std-ref">Migrating an existing app</span></a> for details).</p>
 <p>Why might you use rasa instead of one of those services?</p>
 <ul class="simple">
 <li>you don&#8217;t have to hand over your data to FB/MSFT/GOOG</li>
@@ -238,10 +238,10 @@ You can use rasa as a drop-in replacement for <a class="reference external" href
 <div class="section" id="about">
 <h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
 <p>You can think of rasa NLU as a set of high level APIs for building your own language parser using existing NLP and ML libraries.
-The setup process is designed to be as simple as possible. If you&#8217;re currently using wit, LUIS, or api.ai, you just:</p>
+The setup process is designed to be as simple as possible. If you&#8217;re currently using wit, LUIS, or Dialogflow, you just:</p>
 <ol class="arabic simple">
 <li>download your app data from wit or LUIS and feed it into rasa NLU</li>
-<li>run rasa NLU on your machine and switch the URL of your wit/LUIS api calls to <code class="docutils literal"><span class="pre">localhost:5000/parse</span></code>.</li>
+<li>run rasa NLU on your machine and switch the URL of your wit/LUIS/Dialogflow api calls to <code class="docutils literal"><span class="pre">localhost:5000/parse</span></code>.</li>
 </ol>
 <p>rasa NLU is written in Python, but it you can use it from any language through <a class="reference internal" href="http.html#section-http"><span class="std std-ref">Using rasa NLU as a HTTP server</span></a>.
 If your project <em>is</em> written in Python you can simply import the relevant classes.</p>
