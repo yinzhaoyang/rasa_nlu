@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Migrating an existing app &mdash; rasa NLU 0.10.1 documentation</title>
+  <title>Migrating an existing app &mdash; rasa NLU 0.10.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="rasa NLU 0.10.1 documentation" href="index.html"/>
+    <link rel="top" title="rasa NLU 0.10.3 documentation" href="index.html"/>
         <link rel="next" title="Training Data Format" href="dataformat.html"/>
         <link rel="prev" title="Configuration" href="config.html"/>
 <link href="_static/css/rasa_theme.css" rel="stylesheet" type="text/css">
@@ -106,7 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#banana-peels">Banana Peels</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#wit-ai">wit.ai</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#luis-ai">LUIS.ai</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#api-ai">api.ai</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dialogflow">Dialogflow</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#emulation">Emulation</a></li>
@@ -200,10 +200,10 @@
 
 <div class="section" id="migrating-an-existing-app">
 <span id="section-migration"></span><h1>Migrating an existing app<a class="headerlink" href="#migrating-an-existing-app" title="Permalink to this headline">¶</a></h1>
-<p>Rasa NLU is designed to make migrating from wit/LUIS/api.ai as simple as possible.
+<p>Rasa NLU is designed to make migrating from wit/LUIS/Dialogflow as simple as possible.
 The TLDR instructions for migrating are:</p>
 <ul class="simple">
-<li>download an export of your app data from wit/LUIS/api.ai</li>
+<li>download an export of your app data from wit/LUIS/Dialogflow</li>
 <li>follow the <a class="reference internal" href="tutorial.html#tutorial"><span class="std std-ref">Tutorial: A simple restaurant search bot</span></a>, using your downloaded data instead of <code class="docutils literal"><span class="pre">demo-rasa.json</span></code></li>
 </ul>
 <div class="section" id="banana-peels">
@@ -220,16 +220,16 @@ The file you want from your download is called <code class="docutils literal"><s
 <h3>LUIS.ai<a class="headerlink" href="#luis-ai" title="Permalink to this headline">¶</a></h3>
 <p>Nothing special here. Downloading the data and importing it into Rasa NLU should work without issues</p>
 </div>
-<div class="section" id="api-ai">
-<h3>api.ai<a class="headerlink" href="#api-ai" title="Permalink to this headline">¶</a></h3>
-<p>api app exports generate multiple files rather than just one.
-Put them all in a directory (see <code class="docutils literal"><span class="pre">data/examples/api</span></code> in the repo)
+<div class="section" id="dialogflow">
+<h3>Dialogflow<a class="headerlink" href="#dialogflow" title="Permalink to this headline">¶</a></h3>
+<p>Dialogflow exports generate multiple files rather than just one.
+Put them all in a directory (see <code class="docutils literal"><span class="pre">data/examples/dialogflow</span></code> in the repo)
 and pass that path to the trainer.</p>
 </div>
 </div>
 <div class="section" id="emulation">
 <h2>Emulation<a class="headerlink" href="#emulation" title="Permalink to this headline">¶</a></h2>
-<p>To make Rasa NLU easy to try out with existing projects, the server can <cite>emulate</cite> wit, LUIS, or api.ai.
+<p>To make Rasa NLU easy to try out with existing projects, the server can <cite>emulate</cite> wit, LUIS, or Dialogflow.
 In native mode, a request / response looks like this :</p>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> curl -XPOST localhost:5000/parse -d <span class="s1">&#39;{&quot;q&quot;:&quot;I am looking for Chinese food&quot;}&#39;</span> <span class="p">|</span> python -mjson.tool
 <span class="go">{</span>
@@ -272,7 +272,7 @@ In native mode, a request / response looks like this :</p>
 <span class="go">}</span>
 </pre></div>
 </div>
-<p>and finally for api.ai</p>
+<p>and finally for Dialogflow</p>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> curl <span class="s1">&#39;localhost:5000/parse?q=hello&#39;</span> <span class="p">|</span> python -mjson.tool
 <span class="go">{</span>
 <span class="go">    &quot;id&quot;: &quot;ffd7ede3-b62f-11e6-b292-98fe944ee8c2&quot;,</span>
@@ -343,12 +343,14 @@ In native mode, a request / response looks like this :</p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 0.10.1
+        v: 0.10.3
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
         <dl>
             <dt>Tags</dt>
+            <dd><a href="0.10.3/migrating.html">0.10.3</a></dd>
+            <dd><a href="0.10.2/migrating.html">0.10.2</a></dd>
             <dd><a href="0.10.1/migrating.html">0.10.1</a></dd>
             <dd><a href="0.10.0/migrating.html">0.10.0</a></dd>
             <dd><a href="0.9.2/migrating.html">0.9.2</a></dd>
@@ -389,7 +391,7 @@ In native mode, a request / response looks like this :</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.1',
+            VERSION:'0.10.3',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

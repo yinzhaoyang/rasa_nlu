@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Language Understanding with rasa NLU &mdash; rasa NLU 0.10.1 documentation</title>
+  <title>Language Understanding with rasa NLU &mdash; rasa NLU 0.10.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="rasa NLU 0.10.1 documentation" href="#"/>
+    <link rel="top" title="rasa NLU 0.10.3 documentation" href="#"/>
         <link rel="next" title="Installation" href="installation.html"/>
 <link href="_static/css/rasa_theme.css" rel="stylesheet" type="text/css">
 
@@ -192,7 +192,7 @@
 <h1>Language Understanding with rasa NLU<a class="headerlink" href="#language-understanding-with-rasa-nlu" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This is the documentation for version 0.10.1 of rasa NLU. Make sure you select
+<p class="last">This is the documentation for version 0.10.3 of rasa NLU. Make sure you select
 the appropriate version of the documentation for your local installation!</p>
 </div>
 <p>rasa NLU is an open source tool for intent classification and entity extraction. For example, taking a sentence like</p>
@@ -210,7 +210,7 @@ the appropriate version of the documentation for your local installation!</p>
 </pre></div>
 </div>
 <p>The intended audience is mainly people developing bots.
-You can use rasa as a drop-in replacement for <a class="reference external" href="https://wit.ai">wit</a> , <a class="reference external" href="https://www.luis.ai">LUIS</a> , or <a class="reference external" href="https://api.ai">api.ai</a>, the only change in your code is to send requests to <code class="docutils literal"><span class="pre">localhost</span></code> instead (see <a class="reference internal" href="migrating.html#section-migration"><span class="std std-ref">Migrating an existing app</span></a> for details).</p>
+You can use rasa as a drop-in replacement for <a class="reference external" href="https://wit.ai">wit</a> , <a class="reference external" href="https://www.luis.ai">LUIS</a> , or <a class="reference external" href="https://dialogflow.com">Dialogflow</a>, the only change in your code is to send requests to <code class="docutils literal"><span class="pre">localhost</span></code> instead (see <a class="reference internal" href="migrating.html#section-migration"><span class="std std-ref">Migrating an existing app</span></a> for details).</p>
 <p>Why might you use rasa instead of one of those services?</p>
 <ul class="simple">
 <li>you don&#8217;t have to hand over your data to FB/MSFT/GOOG</li>
@@ -235,10 +235,10 @@ You can use rasa as a drop-in replacement for <a class="reference external" href
 <div class="section" id="about">
 <h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
 <p>You can think of rasa NLU as a set of high level APIs for building your own language parser using existing NLP and ML libraries.
-The setup process is designed to be as simple as possible. If you&#8217;re currently using wit, LUIS, or api.ai, you just:</p>
+The setup process is designed to be as simple as possible. If you&#8217;re currently using wit, LUIS, or Dialogflow, you just:</p>
 <ol class="arabic simple">
 <li>download your app data from wit or LUIS and feed it into rasa NLU</li>
-<li>run rasa NLU on your machine and switch the URL of your wit/LUIS api calls to <code class="docutils literal"><span class="pre">localhost:5000/parse</span></code>.</li>
+<li>run rasa NLU on your machine and switch the URL of your wit/LUIS/Dialogflow api calls to <code class="docutils literal"><span class="pre">localhost:5000/parse</span></code>.</li>
 </ol>
 <p>rasa NLU is written in Python, but it you can use it from any language through <a class="reference internal" href="http.html#section-http"><span class="std std-ref">Using rasa NLU as a HTTP server</span></a>.
 If your project <em>is</em> written in Python you can simply import the relevant classes.</p>
@@ -317,12 +317,14 @@ If your project <em>is</em> written in Python you can simply import the relevant
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Other Versions</span>
-        v: 0.10.1
+        v: 0.10.3
         <span class="fa fa-caret-down"></span>
     </span>
     <div class="rst-other-versions">
         <dl>
             <dt>Tags</dt>
+            <dd><a href="0.10.3/index.html">0.10.3</a></dd>
+            <dd><a href="0.10.2/index.html">0.10.2</a></dd>
             <dd><a href="0.10.1/index.html">0.10.1</a></dd>
             <dd><a href="0.10.0/index.html">0.10.0</a></dd>
             <dd><a href="0.9.2/index.html">0.9.2</a></dd>
@@ -363,7 +365,7 @@ If your project <em>is</em> written in Python you can simply import the relevant
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.10.1',
+            VERSION:'0.10.3',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
