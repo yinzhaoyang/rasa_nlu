@@ -19,7 +19,8 @@ class NoEmulator(object):
         # type: (Dict[Text, Any]) -> Dict[Text, Any]
 
         _data = {}
-        _data["text"] = data["q"][0] if type(data["q"]) == list else data["q"]
+        if data.get("q"):
+            _data["text"] = data["q"][0] if type(data["q"]) == list else data["q"]
 
         if not data.get("project"):
             _data["project"] = "default"

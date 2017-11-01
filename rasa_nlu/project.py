@@ -55,7 +55,23 @@ class Project(object):
             self._writer_lock.release()
         self._reader_lock.release()
 
+    def _ensure_model_is_loaded(self, model_name):
+        self._loader_lock.acquire()
+        try:
+            if not self._models.get(model_name):
+                self._models[model_name] = self._interpreter_for_model(
+                    model_name)
+        finally:
+            self._loader_lock.release()
+
     def parse(self, text, time=None, model_name=None):
+        responses, used_model = self.parseAll([text], time, model_name)
+        if responses:
+            return responses[0], used_model
+        else:
+            return None, used_model
+
+    def parseAll(self, texts, time=None, model_name=None):
         self._begin_read()
 
         # Lazy model loading
@@ -63,18 +79,12 @@ class Project(object):
             model_name = self._latest_project_model()
             logger.warn("Invalid model requested. Using default")
 
-        self._loader_lock.acquire()
-        try:
-            if not self._models.get(model_name):
-                self._models[model_name] = self._interpreter_for_model(model_name)
-        finally:
-            self._loader_lock.release()
-
-        response = self._models[model_name].parse(text, time)
+        self._ensure_model_is_loaded(model_name)
+        responses = [self._models[model_name].parse(t, time) for t in texts]
 
         self._end_read()
 
-        return response, model_name
+        return responses, model_name
 
     def update(self, model_name):
         self._writer_lock.acquire()

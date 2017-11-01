@@ -32,6 +32,29 @@ def create_argparser():
     return parser
 
 
+def do_evaluation_in_worker(interpreter):
+    # type: (RasaNLUConfig) -> Text
+    """Loads the trainer and the data and runs the training in a worker."""
+
+    try:
+        return intent_performance_report(config, model_path)
+    except Exception as e:
+        raise Exception(config.get("project"), e)
+
+
+def intent_performance_report(data_path, language, interpreter):
+    from sklearn import metrics
+
+    # get the metadata config from the package data
+    test_data = load_data(data_path, language)
+    preds, test_y = _evaluate(test_data, interpreter)
+
+    report = metrics.classification_report(test_y, preds)
+    confusion_matrix = metrics.confusion_matrix(test_y, preds)
+
+    return report, confusion_matrix
+
+
 def plot_confusion_matrix(cm, classes,
                           normalize=False,
                           title='Confusion matrix',
@@ -83,14 +106,7 @@ def log_evaluation_table(test_y, preds):
     logger.info("Classification report: \n{}".format(report))
 
 
-def run_intent_evaluation(config, model_path, component_builder=None):
-    from sklearn.metrics import confusion_matrix
-    from sklearn.utils.multiclass import unique_labels
-
-    # get the metadata config from the package data
-    test_data = load_data(config['data'], config['language'])
-    interpreter = Interpreter.load(model_path, config, component_builder)
-
+def _evaluate(test_data, interpreter):
     test_y = [e.get("intent") for e in test_data.training_examples]
 
     preds = []
@@ -100,6 +116,18 @@ def run_intent_evaluation(config, model_path, component_builder=None):
             preds.append(res['intent'].get('name'))
         else:
             preds.append(None)
+    return preds, test_y
+
+
+def run_intent_evaluation(config, model_path, component_builder=None):
+    from sklearn.metrics import confusion_matrix
+    from sklearn.utils.multiclass import unique_labels
+
+    # get the metadata config from the package data
+    test_data = load_data(config['data'], config['language'])
+    interpreter = Interpreter.load(model_path, config, component_builder)
+
+    preds, test_y = _evaluate(test_data, interpreter)
 
     log_evaluation_table(test_y, preds)
 

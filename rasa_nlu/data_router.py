@@ -19,7 +19,8 @@ from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.logger import jsonFileLogObserver, Logger
 
-from rasa_nlu import utils
+from rasa_nlu import utils, evaluate
+from rasa_nlu.converters import load_data
 from rasa_nlu.project import Project
 from rasa_nlu.components import ComponentBuilder
 from rasa_nlu.config import RasaNLUConfig
@@ -148,24 +149,32 @@ class DataRouter(object):
     def extract(self, data):
         return self.emulator.normalise_request_json(data)
 
+    def _ensure_loaded_project(self, project):
+        if project not in self.project_store:
+            projects = self._list_projects(self.config['path'])
+            if project not in projects:
+                raise InvalidProjectError("No project found with name "
+                                          "'{}'.".format(project))
+            else:
+                try:
+                    p = Project(self.config, self.component_builder, project)
+                    self.project_store[project] = p
+                except Exception as e:
+                    raise InvalidProjectError("Unable to load project '{}'. "
+                                              "Error: {}".format(project, e))
+
     def parse(self, data):
         project = data.get("project") or RasaNLUConfig.DEFAULT_PROJECT_NAME
         model = data.get("model")
 
-        if project not in self.project_store:
-            projects = self._list_projects(self.config['path'])
-            if project not in projects:
-                raise InvalidProjectError("No project found with name '{}'.".format(project))
-            else:
-                try:
-                    self.project_store[project] = Project(self.config, self.component_builder, project)
-                except Exception as e:
-                    raise InvalidProjectError("Unable to load project '{}'. Error: {}".format(project, e))
+        self._ensure_loaded_project(project)
 
-        response, used_model = self.project_store[project].parse(data['text'], data.get('time', None), model)
+        response, used_model = self.project_store[project].parse(
+                data['text'], data.get('time', None), model)
 
         if self.responses:
-            self.responses.info('', user_input=response, project=project, model=used_model)
+            self.responses.info('', user_input=response, project=project,
+                                model=used_model)
         return self.format_response(response)
 
     @staticmethod
@@ -186,25 +195,89 @@ class DataRouter(object):
             "available_projects": {name: project.as_dict() for name, project in self.project_store.items()}
         }
 
-    def start_train_process(self, data, config_values):
-        # type: (Text, Dict[Text, Any]) -> Deferred
-        """Start a model training."""
-
+    @staticmethod
+    def _write_data_to_file(data):
         if PY3:
-            f = tempfile.NamedTemporaryFile("w+", suffix="_training_data", delete=False, encoding="utf-8")
+            f = tempfile.NamedTemporaryFile("w+", suffix="_training_data",
+                                            delete=False, encoding="utf-8")
             f.write(data)
         else:
-            f = tempfile.NamedTemporaryFile("w+", suffix="_training_data", delete=False)
+            f = tempfile.NamedTemporaryFile("w+", suffix="_training_data",
+                                            delete=False)
             f.write(data.encode("utf-8"))
         f.close()
+        return f.name
+
+    def _config_from_args(self, config_values, data_file):
         # TODO: fix config handling
         _config = self.config.as_dict()
         for key, val in config_values.items():
             _config[key] = val
-        _config["data"] = f.name
-        train_config = RasaNLUConfig(cmdline_args=_config)
+        _config["data"] = data_file
+        return RasaNLUConfig(cmdline_args=_config)
 
-        project = _config.get("project")
+    def _evaluate(self, test_data, project, model):
+        test_y = [e.get("intent") for e in test_data.training_examples]
+
+        texts = [e.text for e in test_data.training_examples]
+
+        preds_json, _ = self.project_store[project].parseAll(texts, None, model)
+
+        preds = []
+        for res in preds_json:
+            if res.get('intent'):
+                preds.append(res['intent'].get('name'))
+            else:
+                preds.append(None)
+        return preds, test_y, preds_json
+
+    def start_evaluation(self, data, parameters):
+        # type: (Text, Dict[Text, Any]) -> Dict[Text, Any]
+        """Start a model evaluation."""
+        from sklearn import metrics
+        from sklearn.utils import multiclass
+
+        data_file = self._write_data_to_file(data)
+
+        project = parameters.get("project") or RasaNLUConfig.DEFAULT_PROJECT_NAME
+        model = parameters.get("model")
+
+        self._ensure_loaded_project(project)
+
+        test_data = load_data(data_file)
+        preds, test_y, preds_json = self._evaluate(test_data, project, model)
+        labels = multiclass.unique_labels(test_y, preds)
+        p, r, f, s = metrics.precision_recall_fscore_support(test_y, preds,
+                                                             labels=labels)
+        confusion_matrix = metrics.confusion_matrix(test_y, preds,
+                                                    labels=labels)
+        a = metrics.accuracy_score(test_y, preds)
+
+        per_label = {label: {
+                      "precision": p[i],
+                      "recall": r[i],
+                      "fscore": f[i],
+                      "support": s[i],
+                      "confusion": dict(zip(labels, confusion_matrix[i].tolist()))}
+                     for i, label in enumerate(labels)}
+
+        predictions = [{"text": e.text, "intent": e.get("intent"), "predicted": p.get("intent")}
+                       for e, p in zip(test_data.training_examples, preds_json)]
+
+        return {"intent_evaluation": {
+                    "predictions": predictions,
+                    "accuracy": a,
+                    "intents": per_label}}
+
+    def start_train_process(self, data, config_values):
+        # type: (Text, Dict[Text, Any]) -> Deferred
+        """Start a model training."""
+
+        data_file = self._write_data_to_file(data)
+        # TODO: fix config handling
+        train_config = self._config_from_args(config_values, data_file)
+
+        project = train_config.get("project")
         if not project:
             raise InvalidProjectError("Missing project name to train")
         elif project in self.project_store:

@@ -129,8 +129,7 @@ class RasaNLU(object):
     def parse_get(self, request):
         request.setHeader('Content-Type', 'application/json')
         if request.method.decode('utf-8', 'strict') == 'GET':
-            request_params = {key.decode('utf-8', 'strict'): value[0].decode('utf-8', 'strict')
-                              for key, value in request.args.items()}
+            request_params = self._decode_additional_args(request)
         else:
             request_params = simplejson.loads(
                     request.content.read().decode('utf-8', 'strict'))
@@ -182,14 +181,22 @@ class RasaNLU(object):
         request.setHeader('Content-Type', 'application/json')
         return simplejson.dumps(self.data_router.get_status())
 
+    @staticmethod
+    def _decode_training_data(request):
+        return request.content.read().decode('utf-8', 'strict')
+
+    @staticmethod
+    def _decode_additional_args(request):
+        return {k.decode('utf-8', 'strict'): v[0].decode('utf-8', 'strict')
+                for k, v in request.args.items()}
+
     @app.route("/train", methods=['POST'])
     @requires_auth
     @check_cors
     @inlineCallbacks
     def train(self, request):
-        data_string = request.content.read().decode('utf-8', 'strict')
-        kwargs = {key.decode('utf-8', 'strict'): value[0].decode('utf-8', 'strict')
-                  for key, value in request.args.items()}
+        data_string = self._decode_training_data(request)
+        kwargs = self._decode_additional_args(request)
         request.setHeader('Content-Type', 'application/json')
 
         try:
@@ -210,6 +217,25 @@ class RasaNLU(object):
             request.setResponseCode(500)
             returnValue(simplejson.dumps(
                     {"error": "{}".format(e)}))
+
+    @app.route("/evaluate", methods=['POST'])
+    @requires_auth
+    @check_cors
+    def evaluate(self, request):
+        data_string = self._decode_training_data(request)
+        kwargs = self._decode_additional_args(request)
+        parameters = self.data_router.extract(kwargs)
+        request.setHeader('Content-Type', 'application/json')
+
+        #try:
+        request.setResponseCode(200)
+        response = self.data_router.start_evaluation(
+                data_string, parameters)
+        return simplejson.dumps(response)
+        # except Exception as e:
+        #     request.setResponseCode(500)
+        #     return simplejson.dumps(
+        #             {"error": "{}".format(e)})
 
 
 if __name__ == '__main__':

@@ -84,8 +84,7 @@ def init():  # pragma: no cover
 
     parser = create_argparser()
     args = parser.parse_args()
-    config = RasaNLUConfig(args.config, os.environ, vars(args))
-    return config
+    return RasaNLUConfig(args.config, os.environ, vars(args))
 
 
 def do_train_in_worker(config):
