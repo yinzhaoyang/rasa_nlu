@@ -52,12 +52,12 @@ class SpacyNLP(Component):
             spacy_model_name = config["language"]
         logger.info("Trying to load spacy model with name '{}'".format(spacy_model_name))
         nlp = spacy.load(spacy_model_name, parser=False)
-        spacy_custom_vectors = config["spacy_custom_vectors"]
-        if spacy_custom_vectors:
-            if os.path.isfile(spacy_custom_vectors):
-                nlp.vocab.load_vectors_from_bin_loc(spacy_custom_vectors)
+        spacy_word_vectors = config["spacy_word_vectors"]
+        if spacy_word_vectors:
+            if os.path.isfile(spacy_word_vectors):
+                nlp.vocab.load_vectors_from_bin_loc(spacy_word_vectors)
             else:
-                logger.error("Spacy custom vector file does not exist: %s" % spacy_custom_vectors)
+                logger.error("Spacy custom vector file does not exist: %s" % spacy_word_vectors)
         cls.ensure_proper_language_model(nlp)
         return SpacyNLP(nlp, config["language"], spacy_model_name)
 
@@ -104,10 +104,10 @@ class SpacyNLP(Component):
             return cached_component
 
         nlp = spacy.load(model_metadata.get("spacy_model_name"), parser=False)
-        spacy_custom_vectors = model_metadata.get("spacy_custom_vectors")
-        if spacy_custom_vectors:
-            if os.path.isfile(spacy_custom_vectors):
-                nlp.vocab.load_vectors_from_bin_loc(spacy_custom_vectors)
+        spacy_word_vectors = model_metadata.get("spacy_word_vectors")
+        if spacy_word_vectors:
+            if os.path.isfile(spacy_word_vectors):
+                nlp.vocab.load_vectors_from_bin_loc(spacy_word_vectors)
         cls.ensure_proper_language_model(nlp)
         return SpacyNLP(nlp, model_metadata.get("language"), model_metadata.get("spacy_model_name"))
 
