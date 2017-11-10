@@ -28,7 +28,7 @@ def convert_training_data(data_file, out_file, output_format, language):
         if output_format == 'md':
             f.write(td.as_markdown())
         else:
-            f.write(td.as_json(indent=2))
+            f.write(td.as_json(indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":
