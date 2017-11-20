@@ -42,7 +42,7 @@ class NGramFeaturizer(Featurizer):
 
     requires = ["spacy_doc"]
 
-    n_gram_min_length = 3
+    n_gram_min_length = 2
 
     n_gram_max_length = 17
 

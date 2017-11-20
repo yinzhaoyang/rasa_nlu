@@ -24,7 +24,6 @@ DEFAULT_CONFIG = {
     "log_level": 'INFO',
     "mitie_file": os.path.join("data", "total_word_feature_extractor.dat"),
     "spacy_model_name": None,
-    "spacy_word_vectors": None,
     "num_threads": 1,
     "max_training_processes": 1,
     "path": "projects",

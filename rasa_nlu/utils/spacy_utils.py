@@ -47,15 +47,16 @@ class SpacyNLP(Component):
     def create(cls, config):
         # type: (RasaNLUConfig) -> SpacyNLP
         import spacy
+        from spacy.lang.zh import Chinese
         spacy_model_name = config["spacy_model_name"]
         if spacy_model_name is None:
             spacy_model_name = config["language"]
         logger.info("Trying to load spacy model with name '{}'".format(spacy_model_name))
-        nlp = spacy.load(spacy_model_name, parser=False)
+        nlp = Chinese()
         spacy_word_vectors = config["spacy_word_vectors"]
         if spacy_word_vectors:
             if os.path.isfile(spacy_word_vectors):
-                nlp.vocab.load_vectors_from_bin_loc(spacy_word_vectors)
+                cls.load_fasttext_vectors(nlp, spacy_word_vectors)
             else:
                 logger.error("Spacy custom vector file does not exist: %s" % spacy_word_vectors)
         cls.ensure_proper_language_model(nlp)
@@ -103,11 +104,12 @@ class SpacyNLP(Component):
         if cached_component:
             return cached_component
 
-        nlp = spacy.load(model_metadata.get("spacy_model_name"), parser=False)
+        from spacy.lang.zh import Chinese
+        nlp = Chinese()
         spacy_word_vectors = model_metadata.get("spacy_word_vectors")
         if spacy_word_vectors:
             if os.path.isfile(spacy_word_vectors):
-                nlp.vocab.load_vectors_from_bin_loc(spacy_word_vectors)
+                cls.load_fasttext_vectors(nlp, spacy_word_vectors)
         cls.ensure_proper_language_model(nlp)
         return SpacyNLP(nlp, model_metadata.get("language"), model_metadata.get("spacy_model_name"))
 
@@ -123,3 +125,21 @@ class SpacyNLP(Component):
 #            # In this case `nlp` is an unusable stub.
 #            raise Exception("Failed to load spacy language model for lang '{}'. ".format(nlp.lang) +
 #                            "Make sure you have downloaded the correct model (https://spacy.io/docs/usage/).")
+
+    @classmethod
+    def load_fasttext_vectors(cls, nlp, vectors_loc):
+        logger.info("loading vectors from %s" % vectors_loc)
+        import numpy as np
+        with open(vectors_loc, 'rb') as file_:
+            header = file_.readline()
+            nr_row, nr_dim = header.split()
+            nlp.vocab.reset_vectors(width=int(nr_dim))
+            for line in file_:
+                line = line.decode('utf8')
+                pieces = line.split()
+                word = pieces[0]
+                vector = np.asarray([float(v) for v in pieces[1:]], dtype='f')
+                try:
+                    nlp.vocab.set_vector(word, vector)  # add the vectors to the vocab
+                except Exception as e:
+                    pass
