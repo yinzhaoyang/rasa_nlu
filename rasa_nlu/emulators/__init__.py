@@ -21,6 +21,8 @@ class NoEmulator(object):
         _data = {}
         if data.get("q"):
             _data["text"] = data["q"][0] if type(data["q"]) == list else data["q"]
+        else:
+            _data["text"] = ""
 
         if not data.get("project"):
             _data["project"] = "default"
