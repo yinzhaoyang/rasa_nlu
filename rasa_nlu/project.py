@@ -4,6 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import datetime
+import glob
 
 import os
 import logging
@@ -77,7 +78,10 @@ class Project(object):
         # Lazy model loading
         if not model_name or model_name not in self._models:
             model_name = self._latest_project_model()
-            logger.warn("Invalid model requested. Using default")
+            if model_name not in self._models:
+                logger.warn("Invalid model requested. Using default")
+            else:
+                logger.debug("No model specified. Using default")
 
         self._ensure_model_is_loaded(model_name)
         responses = [self._models[model_name].parse(t, time) for t in texts]
@@ -189,6 +193,6 @@ class Project(object):
         if not path or not os.path.isdir(path):
             return []
         else:
-            return [model
-                    for model in os.listdir(path)
-                    if model.startswith(MODEL_NAME_PREFIX)]
+            return [os.path.relpath(model, path)
+                    for model in glob.glob(os.path.join(path, '*'))
+                    if os.path.isdir(model)]
