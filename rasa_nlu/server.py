@@ -234,15 +234,15 @@ class RasaNLU(object):
         parameters = self.data_router.extract(kwargs)
         request.setHeader('Content-Type', 'application/json')
 
-        #try:
-        request.setResponseCode(200)
-        response = self.data_router.start_evaluation(
-                data_string, parameters)
-        return simplejson.dumps(response)
-        # except Exception as e:
-        #     request.setResponseCode(500)
-        #     return simplejson.dumps(
-        #             {"error": "{}".format(e)})
+        try:
+            request.setResponseCode(200)
+            response = self.data_router.start_evaluation(
+                    data_string, parameters)
+            return simplejson.dumps(response)
+        except Exception as e:
+            request.setResponseCode(500)
+            return simplejson.dumps(
+                    {"error": "{}".format(e)})
 
 
 if __name__ == '__main__':
