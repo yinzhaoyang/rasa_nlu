@@ -1,26 +1,24 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
 from __future__ import absolute_import
-from builtins import str
-from builtins import range
-import io
-import json
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import os
 import warnings
-import six
 
+import six
+from builtins import str
 from typing import Any
 from typing import Dict
-from typing import List
 from typing import Optional
 from typing import Text
 
-from rasa_nlu.config import RasaNLUConfig
+from rasa_nlu import utils
 from rasa_nlu.extractors import EntityExtractor
 from rasa_nlu.model import Metadata
 from rasa_nlu.training_data import Message
 from rasa_nlu.training_data import TrainingData
+from rasa_nlu.utils import write_json_to_file
 
 
 class EntitySynonymMapper(EntityExtractor):
@@ -41,7 +39,8 @@ class EntitySynonymMapper(EntityExtractor):
         for example in training_data.entity_examples:
             for entity in example.get("entities", []):
                 entity_val = example.text[entity["start"]:entity["end"]]
-                self.add_entities_if_synonyms(entity_val, str(entity.get("value")))
+                self.add_entities_if_synonyms(entity_val,
+                                              str(entity.get("value")))
 
     def process(self, message, **kwargs):
         # type: (Message, **Any) -> None
@@ -54,9 +53,10 @@ class EntitySynonymMapper(EntityExtractor):
         # type: (Text) -> Dict[Text, Any]
 
         if self.synonyms:
-            entity_synonyms_file = os.path.join(model_dir, "entity_synonyms.json")
-            with io.open(entity_synonyms_file, 'w') as f:
-                f.write(str(json.dumps(self.synonyms, indent=2, separators=(',', ': '))))
+            entity_synonyms_file = os.path.join(model_dir,
+                                                "entity_synonyms.json")
+            write_json_to_file(entity_synonyms_file, self.synonyms, separators=(',', ': '))
+
             return {"entity_synonyms": "entity_synonyms.json"}
         else:
             return {"entity_synonyms": None}
@@ -68,8 +68,7 @@ class EntitySynonymMapper(EntityExtractor):
         if model_dir and model_metadata.get("entity_synonyms"):
             entity_synonyms_file = os.path.join(model_dir, model_metadata.get("entity_synonyms"))
             if os.path.isfile(entity_synonyms_file):
-                with io.open(entity_synonyms_file, encoding='utf-8') as f:
-                    synonyms = json.loads(f.read())
+                synonyms = utils.read_json_file(entity_synonyms_file)
                 return EntitySynonymMapper(synonyms)
             else:
                 warnings.warn("Failed to load synonyms file from '{}'".format(entity_synonyms_file))
